@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AudioPulse | Conversor de Audio Local con FFmpeg</title>
+  <meta name="description" content="Conversor de formatos de audio local, privado y ultrarrápido con motor nativo FFmpeg. Convierte por lotes a MP3, WAV, FLAC, AAC, OGG, M4A, OPUS y descarga en ZIP.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238b5cf6'><path d='M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z'/></svg>">
+</head>
+<body>
+  <div class="app-background">
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div class="glow-orb orb-3"></div>
+  </div>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+          </svg>
+          <span class="pulse-ring"></span>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title-wrap">
+            <h1 class="brand-title">AudioPulse</h1>
+            <span class="version-tag">LOCAL v1.0</span>
+          </div>
+          <p class="brand-subtitle">Conversor de Audio de Alta Fidelidad &bull; Procesamiento Local &bull; 100% Privado</p>
+        </div>
+      </div>
+
+      <div class="system-status-badge" id="systemStatusBadge">
+        <span class="status-indicator"></span>
+        <div class="status-text">
+          <span class="status-title">Motor FFmpeg 6.1 Activo</span>
+          <span class="status-sub">Sin conexión externa requerida</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Highlights Banner -->
+    <section class="highlights-grid">
+      <div class="highlight-item">
+        <div class="highlight-icon">⚡</div>
+        <div class="highlight-body">
+          <h4>Velocidad Nativa C++</h4>
+          <p>Conversión multihilo directa en tu procesador sin límites de RAM.</p>
+        </div>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-icon">🔒</div>
+        <div class="highlight-body">
+          <h4>100% Privado y Seguro</h4>
+          <p>Tus audios nunca viajan a servidores en la nube ni terceros.</p>
+        </div>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-icon">📦</div>
+        <div class="highlight-body">
+          <h4>Lotes & Descarga ZIP</h4>
+          <p>Convierte decenas de archivos simultáneamente y descárgalos agrupados.</p>
+        </div>
+      </div>
+      <div class="highlight-item">
+        <div class="highlight-icon">🎚️</div>
+        <div class="highlight-body">
+          <h4>Control de Calidad</h4>
+          <p>Bitrates hasta 320 kbps, formatos lossless (FLAC, WAV) y normalización.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Global Conversion Settings -->
+    <section class="card settings-card">
+      <div class="card-header">
+        <div class="header-left">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <h3>Configuración Global de Conversión</h3>
+        </div>
+        <button type="button" class="btn-text" id="toggleAdvancedSettingsBtn">
+          <span>Opciones Avanzadas</span>
+          <svg class="chevron-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Format selector buttons -->
+      <div class="format-selection-group">
+        <label class="group-label">Formato Objetivo Principal:</label>
+        <div class="format-pills" id="formatPillsContainer">
+          <button type="button" class="format-pill active" data-format="mp3">
+            <span class="pill-name">MP3</span>
+            <span class="pill-badge">Universal</span>
+          </button>
+          <button type="button" class="format-pill" data-format="wav">
+            <span class="pill-name">WAV</span>
+            <span class="pill-badge">Sin pérdida</span>
+          </button>
+          <button type="button" class="format-pill" data-format="flac">
+            <span class="pill-name">FLAC</span>
+            <span class="pill-badge">Hi-Fi</span>
+          </button>
+          <button type="button" class="format-pill" data-format="aac">
+            <span class="pill-name">AAC</span>
+            <span class="pill-badge">Calidad/Peso</span>
+          </button>
+          <button type="button" class="format-pill" data-format="m4a">
+            <span class="pill-name">M4A</span>
+            <span class="pill-badge">Apple / iOS</span>
+          </button>
+          <button type="button" class="format-pill" data-format="ogg">
+            <span class="pill-name">OGG</span>
+            <span class="pill-badge">Vorbis</span>
+          </button>
+          <button type="button" class="format-pill" data-format="opus">
+            <span class="pill-name">OPUS</span>
+            <span class="pill-badge">Ultra Eficiente</span>
+          </button>
+          <button type="button" class="format-pill" data-format="wma">
+            <span class="pill-name">WMA</span>
+            <span class="pill-badge">Windows</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quality & Bitrate options -->
+      <div class="settings-row">
+        <div class="setting-item" id="bitrateControlGroup">
+          <label for="globalBitrate">Calidad / Tasa de Bits (Bitrate):</label>
+          <div class="custom-select-wrapper">
+            <select id="globalBitrate">
+              <option value="320k" selected>320 kbps (Máxima calidad de estudio)</option>
+              <option value="256k">256 kbps (Muy alta calidad)</option>
+              <option value="192k">192 kbps (Alta calidad / Estándar)</option>
+              <option value="128k">128 kbps (Calidad media / Menor peso)</option>
+              <option value="96k">96 kbps (Bajo peso / Voz)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="setting-item">
+          <label for="globalChannels">Canales de Audio:</label>
+          <div class="custom-select-wrapper">
+            <select id="globalChannels">
+              <option value="original" selected>Conservar originales</option>
+              <option value="2">Estéreo (2 Canales)</option>
+              <option value="1">Mono (1 Canal)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advanced Settings Panel (Hidden by default) -->
+      <div class="advanced-settings-panel" id="advancedSettingsPanel">
+        <div class="settings-row">
+          <div class="setting-item">
+            <label for="globalSampleRate">Frecuencia de Muestreo (Sample Rate):</label>
+            <div class="custom-select-wrapper">
+              <select id="globalSampleRate">
+                <option value="original" selected>Conservar original</option>
+                <option value="44100">44,100 Hz (Estándar CD / Streaming)</option>
+                <option value="48000">48,000 Hz (Estándar Video / Broadcast)</option>
+                <option value="96000">96,000 Hz (Alta resolución 96k)</option>
+                <option value="22050">22,050 Hz (Voz / Podcasts ligeros)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-item">
+            <label class="checkbox-label" for="globalNormalize">
+              <div class="checkbox-wrap">
+                <input type="checkbox" id="globalNormalize">
+                <span class="custom-checkbox"></span>
+              </div>
+              <div class="checkbox-text">
+                <span class="title">Normalización de Volumen Inteligente</span>
+                <span class="subtitle">Aplica el filtro EBU R128 para uniformar el volumen sin distorsión</span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Upload & Drop Zone -->
+    <section class="drop-zone-section">
+      <div class="drop-zone" id="dropZone">
+        <input type="file" id="fileInput" multiple accept="audio/*,video/*,.mp3,.wav,.flac,.aac,.ogg,.m4a,.opus,.wma,.aiff,.alac,.mp4,.mkv,.webm,.avi,.mov" class="file-input-hidden">
+        
+        <div class="drop-zone-content">
+          <div class="upload-icon-circle">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+          </div>
+          
+          <h2 class="drop-zone-title">Arrastra y suelta tus archivos aquí</h2>
+          <p class="drop-zone-desc">o haz clic para seleccionar desde tu computadora</p>
+          
+          <div class="supported-tags">
+            <span class="tag">MP3</span>
+            <span class="tag">WAV</span>
+            <span class="tag">FLAC</span>
+            <span class="tag">AAC</span>
+            <span class="tag">OGG</span>
+            <span class="tag">M4A</span>
+            <span class="tag">OPUS</span>
+            <span class="tag">WMA</span>
+            <span class="tag-video">Extrae audio de MP4 / MKV / WEBM</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Queue & Batch Management -->
+    <section class="queue-section" id="queueSection" style="display: none;">
+      <div class="queue-header-bar">
+        <div class="queue-info">
+          <h2 class="queue-title">Cola de Conversión</h2>
+          <span class="queue-stats" id="queueStatsBadge">0 archivos</span>
+        </div>
+
+        <div class="queue-actions">
+          <button type="button" class="btn btn-secondary" id="clearAllBtn" title="Vaciar la cola">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            <span>Limpiar Todo</span>
+          </button>
+
+          <button type="button" class="btn btn-primary" id="convertAllBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <span id="convertAllBtnText">Convertir Todos</span>
+          </button>
+
+          <button type="button" class="btn btn-success" id="downloadZipBtn" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Descargar Todo (.ZIP)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Queue Overall Progress Bar -->
+      <div class="overall-progress-container" id="overallProgressContainer" style="display: none;">
+        <div class="overall-progress-header">
+          <span id="overallProgressLabel">Progreso del lote: 0%</span>
+          <span id="overallProgressCount">0 / 0 completados</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="overallProgressBar" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- File cards list -->
+      <div class="file-cards-list" id="fileCardsList">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-content">
+        <p>AudioPulse &bull; Conversor local autónomo impulsado por FFmpeg nativo.</p>
+        <p class="privacy-note">🔒 Tus archivos permanecen en tu disco local (C:\...) y nunca son transmitidos por internet.</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

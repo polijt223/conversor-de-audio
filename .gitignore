@@ -1,0 +1,5 @@
+node_modules/
+temp_uploads/
+temp_converted/
+.DS_Store
+Thumbs.db
